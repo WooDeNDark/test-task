@@ -1,0 +1,29 @@
+---
+- name: Pull Nginx image
+  docker_image:
+    name: nginx
+
+- name: Create directory for volumes
+  file:
+    path: /tmp/volume/config
+    state: directory
+    recurse: yes
+
+- name: Create container
+  docker_container:
+    name: test-task
+    image: nginx
+    state: started
+    ports: 
+    - "{{ nginx_port }}:{{ nginx_port }}"
+    tty: false
+    detach: true
+    volumes:
+    - /tmp/volume/config:/etc/nginx/conf.d
+
+- name: Copying conf file in Docker machine
+  template: src=default.conf dest=/tmp/volume/config/default.conf
+
+- name: Copying picture in Docker machine
+  shell: docker exec test-task mkdir -p /usr/share/nginx/html/image && docker cp roles/DockerWeb/files/{{ image_name }} test-task:/usr/share/nginx/html/image
+  notify: restart nginx

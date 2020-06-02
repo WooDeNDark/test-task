@@ -1,0 +1,4 @@
+---
+nginx_port: 80
+server_name: localhost
+image_name: image.jpg

@@ -1,0 +1,3 @@
+---
+- name: restart nginx
+  shell: docker exec test-task service nginx reload
